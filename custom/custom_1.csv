@@ -1,0 +1,9 @@
+GROUP OF PROCESSES;;;;;;;
+NAME OF PROCESS;PATTERN;NUMBER OF INSTANCES;START COMMAND;END COMMAND;LOG FILE PATH;LOG UPDATE (IN SECONDS);CHECK FOR ERRORS IN LOGFILE
+;;;;;;;
+DEBIAN CUSTOM PROCESSES;;;;;;;
+PROCESS;PATTERN;1;START_COMMAND;END_COMMAND;;0;N
+EVOLUTION CALLENDAR;/usr/lib/evolution/evolution-calendar-factory-subprocess;2;;;;0;N
+PACKAGE KIT;/usr/lib/packagekit/packagekitd;1;;;;0;N
+UDISKD;/usr/lib/udisks2/udisksd;1;;;;0;N
+NETWORK MANAGER;/usr/lib/NetworkManager/nm-dhcp;1;;;;0;N

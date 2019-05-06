@@ -1,0 +1,13 @@
+GROUP OF PROCESSES;;;;;;;
+NAME OF PROCESS;PATTERN;NUMBER OF INSTANCES;START COMMAND;END COMMAND;LOG FILE PATH;LOG UPDATE (IN SECONDS);CHECK FOR ERRORS IN LOGFILE
+;;;;;;;
+DEBIAN CUSTOM PROCESSES;;;;;;;
+EVOLUTION CALLENDAR;/usr/lib/evolution/evolution-calendar-factory-subprocess;2;Evolution Start;;/home/tomek/Logs/1/file_;0;N
+PACKAGE KIT;/usr/lib/packagekit/packagekitd;1;PCK start;;/home/tomek/Logs/2/file_;0;N
+UDISKD;/usr/lib/udisks2/udisksd;1;udiskd -n 50;;/home/tomek/Logs/3/file_;300;N
+NETWORK MANAGER;/usr/lib/NetworkManager/nm-dhcp;1;netmen -x -d;;/home/tomek/Logs/4/file_;0;N
+GVFSD TRASH;/usr/lib/gvfs/gvfsd-trash;1;gvfsd;;/home/tomek/Logs/5/file_;0;N
+GVFS MTP;/usr/lib/gvfs/gvfs-mtp;1;gvfs -mtp;;/home/tomek/Logs/4/file_;0;N
+XORG;/usr/lib/xorg/Xorg vt2 -displayfd;1;xorg start;;/home/tomek/Logs/1/file_;0;N
+BAD PROCESS;None;2;No start command;;;0;N
+BAD PROCESS 2;None;1;No_start_command;;/home/tomek/Logs/6/file_;0;N
