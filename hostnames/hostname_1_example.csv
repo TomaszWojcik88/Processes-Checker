@@ -1,0 +1,11 @@
+GROUP OF PROCESSES;;;;;;;
+NAME OF PROCESS;PATTERN;NUMBER OF INSTANCES;START COMMAND;END COMMAND;LOG FILE PATH;LOG UPDATE (IN SECONDS);CHECK FOR ERRORS IN LOGFILE
+;;;;;;;
+BASIC PROCESSES;;;;;;;
+PROC 1;/etc/init.d/proc_1_pattern;1;/etc/init.d/proc_1 start;/etc/init.d/proc_1 stop;;0;N
+PROC 2;/etc/init.d/proc_2_pattern;1;/etc/init.d/proc_2 start;/etc/init.d/proc_2 stop;/path/to/logs.2;300;N
+PROC 3;/etc/init.d/proc_3_pattern;1;/etc/init.d/proc_3 start;/etc/init.d/proc_3 stop;;0;N
+;;;;;;;
+MULTIPLE PROCESSES;;;;;;;
+PROCESS NAME 1;pattern_for_process;4;/etc/init.d/process_name_1 start -n 4;/etc/init.d/process_name_1 stop -n 4;;0;N
+PROCESS NAME 2;pattern_for_process;5;/etc/init.d/process_name_2 start -n 5;/etc/init.d/process_name_1 stop -n 5;/path/to/2/logs.out;0;Y
