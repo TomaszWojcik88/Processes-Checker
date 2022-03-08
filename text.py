@@ -1,9 +1,12 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
+text_1 = 'Could not change owner of the script. Currently set user in config file is wrong!'
 text_2 = 'You have to be logged as privileged user!'
+text_3 = 'Change variable in config file named "owner_of_the_script"'
 text_4 = 'No error found'
 text_5 = 'NONE LOG FILE SPECIFIED FOR THAT PROCESS'
+text_6 = 'File elaready exist. Please remove the file and try again:'
 text_7 = 'Path for process not added'
 text_8 = 'Log file not found'
 text_10 = 'Could not sent mail using smtplib library'

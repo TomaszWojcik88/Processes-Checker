@@ -5,28 +5,13 @@ from os import path as os_path, listdir as os_listdir, stat as os_stat, system a
 from sys import path as sys_path, argv as sys_argv, exit as sys_exit
 from socket import gethostname as socket_gethostname
 from datetime import datetime, timedelta
-import config
-# IMPORT MODULE MENU #
-sys_path.append(os_path.dirname(os_path.expanduser(config.path_menu)))
-sys_path.append(os_path.dirname(os_path.expanduser(config.path_menu_text)))
-sys_path.append(os_path.dirname(os_path.expanduser(config.path_menu_signs)))
-import text, style, menu, menu_text, menu_signs
+from subprocess import Popen, PIPE, STDOUT
+from pwd import getpwnam 
+import psutil
+import argparse
+# INTERNAL LIBRARIES #
+import config, text, style
 GREEN, BLUE, RED, YELLOW, CYAN, ORANGE, NC = style.GREEN, style.BLUE, style.RED, style.YELLOW, style.CYAN, style.ORANGE, style.NC
-
-
-
-class MenuConfig(object):
-
-	application_name = style.application_name
-	application_type = style.application_type
-	additional_application_description = style.additional_application_description
-	need_second_argument = False
-	letter_for_menu = 'm' # SHOULD NOT BE CHANGED
-	need_first_argument = False
-	argument_list = style.argument_list
-	additional_argument_list =  [ ]
-	any_argument_have_submenu = False
-	submenu_arguments_list =	{ }
 
 
 
@@ -73,7 +58,7 @@ class CheckProcesses(object):
 					current_hostname_file = file_hostname
 			# IF FILE EXIST THEN GATHER FILE TO DATABASE
 			if not current_hostname_file:
-				self.menu_object.goto_exit_or_main_menu( ''.join([ style.sign_newline_double, text.text_15, style.sign_newline_double ]) )
+				sys_exit( ''.join([ style.sign_newline_double, text.text_15, style.sign_newline_double ]) )
 		if custom_file:
 			current_hostname_file = custom_file
 		with open( os_path.join( config.path_to_script, config.folder_to_processes_files, current_hostname_file ), 'r' ) as current_hostname_file_opened:
@@ -88,10 +73,10 @@ class CheckProcesses(object):
 				if not process_array[1] and not process_array[2] and not process_array[6]:
 					self.list_of_processes_to_check.append(GroupProcess(process_array[0]))
 				else:
-					if not process_array[0]: self.menu_object.goto_exit_or_main_menu( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_16) % process_array[0] ) )
-					if not process_array[1]: self.menu_object.goto_exit_or_main_menu( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_17) % process_array[0] ) )
-					if not process_array[2]: self.menu_object.goto_exit_or_main_menu( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_18) % process_array[0] ) )
-					if not process_array[6]: self.menu_object.goto_exit_or_main_menu( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_19) % process_array[0] ) )
+					if not process_array[0]: sys_exit( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_16) % process_array[0] ) )
+					if not process_array[1]: sys_exit( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_17) % process_array[0] ) )
+					if not process_array[2]: sys_exit( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_18) % process_array[0] ) )
+					if not process_array[6]: sys_exit( ( ''.join(style.sign_fullfill, style.sign_minus_space, text.text_19) % process_array[0] ) )
 					start_command = None
 					end_command = None
 					log_path = None
@@ -164,7 +149,6 @@ class CheckProcesses(object):
 	def list_currently_working_processes(self, ps_command, pid_field):
 		# USE PSUTIL #
 		if config.use_psutil_library or ps_command == config.psutil_library:
-			import psutil
 			try:
 				list_of_processes_on_current_hostname = list()
 				for process in psutil.process_iter():
@@ -175,15 +159,14 @@ class CheckProcesses(object):
 				self.list_of_processes_on_current_hostname = list_of_processes_on_current_hostname
 				self.pid_field = 0
 			except ImportError as error:
-				self.menu_object.goto_exit_or_main_menu(''.join([ style.sing_newline, text.text_26, style.sing_newline ]))
+				sys_exit(''.join([ style.sing_newline, text.text_26, style.sing_newline ]))
 		# USE SYSTEM PS COMMAND #
 		else:
-			from subprocess import Popen, PIPE, STDOUT
 			self.pid_field = pid_field
 			try:
 				p = Popen(ps_command.split( ), stdout=PIPE, stderr=STDOUT)
 			except OSError:
-				self.menu_object.goto_exit_or_main_menu(''.join([ style.sing_newline, text.text_13, style.sign_apostrophe, ps_command, style.sign_apostrophe, style.sign_space,  style.sing_newline ]) )
+				sys_exit(''.join([ style.sing_newline, text.text_13, style.sign_apostrophe, ps_command, style.sign_apostrophe, style.sign_space,  style.sing_newline ]) )
 			list_of_processes_on_current_hostname = list()
 			for line in p.stdout:
 				line = line.strip()
@@ -430,9 +413,9 @@ class CheckProcesses(object):
 						pids_of_working_processes.append( (running_process.split( )[pid_column]) )
 		if pids_of_working_processes:
 			pids_of_working_processes_set = list(set(pids_of_working_processes))
-			self.menu_object.goto_exit_or_main_menu( ''.join([ style.sing_newline, config.command_kill, style.sign_space.join(pids_of_working_processes_set) ]) )
+			print( ''.join([ style.sing_newline, config.command_kill, style.sign_space.join(pids_of_working_processes_set), style.sing_newline ]) )
 		else:
-			self.menu_object.goto_exit_or_main_menu( ''.join([ style.sing_newline, text.text_14, style.sing_newline ]) )
+			print( ''.join([ style.sing_newline, text.text_14, style.sing_newline ]) )
 
 
 
@@ -479,12 +462,17 @@ class CheckProcesses(object):
 					data_for_file += ''.join([ config.command_sleep, style.sign_space, str(config.break_between_each_start_stop_command_in_seconds), style.sing_newline ])
 		data_for_file += ''.join([ config.command_echo, style.sign_space, style.sign_apostrophe, text.text_25, style.sign_apostrophe, style.sing_newline ])
 		# SAVE DATA TO FILE #
-		with open( script_name, 'w' ) as created_script_file:
-			created_script_file.write(data_for_file)
+		try:
+			with open( script_name, 'w' ) as created_script_file:
+				created_script_file.write(data_for_file)
+		except:
+			sys_exit(''.join([style.sing_newline, text.text_6, style.sing_newline, script_name, style.sing_newline]))
 		# SET PERMISSIONS TO SCRIPT #
 		if config.owner_of_the_script:
-			from pwd import getpwnam 
-			os_chown( script_name, getpwnam(config.owner_of_the_script).pw_uid, 0 )
+			try:
+				os_chown( script_name, getpwnam(config.owner_of_the_script).pw_uid, 0 )
+			except:
+				sys_exit(''.join([style.sing_newline, text.text_1, style.sing_newline, script_name, style.sing_newline, text.text_3, style.sing_newline]))
 		os_chmod( script_name, config.access_rights_to_scipt )
 		print(final_message)
 
@@ -564,7 +552,7 @@ class CheckProcesses(object):
 						text = msg.as_string()
 						server.sendmail(config.sender, config.receivers, text)
 					except:
-						self.menu_object.goto_exit_or_main_menu( text.text_11 )
+						sys_exit( text.text_11 )
 				# USING MAILX #
 				if config.use_mailx:
 					try:
@@ -575,67 +563,10 @@ class CheckProcesses(object):
 						os_system(command)
 						os_remove(file_body_path)
 					except KeyError:
-						self.menu_object.goto_exit_or_main_menu( text.text_16 )
+						sys_exit( text.text_16 )
 				time_sleep(config.when_found_broken_processes_next_check_in_seconds)
 			time_sleep(config.check_processes_each_how_many_seconds)
 
-
-
-	#################
-	### ARGUMENTS ###
-	#################
-
-	def arguments(self, menu_object, argument_list, additional_argument):
-		self.menu_object = menu_object
-		if 'm' in argument_list:
-			menu_object.menu()
-		if 'h' in argument_list:
-			menu_object.help()
-		if 'q' in argument_list:
-			sys_exit(text.text_27)
-		# DO NOT USE COLOR #
-		if '0' in argument_list:
-			self.no_color()
-		# USE COLOR #
-		if '1' in argument_list:
-			self.color()
-		# CHECK PROCESSES FROM CUSTOM LIST
-		if 'a' in argument_list:
-			self.check_processes_from_custom_list()
-		# PRINT PATHS TO LOGFILES #
-		if 'b' in argument_list:
-			self.load_processes_list()
-			self.print_log_files_paths()
-		# CHECK LOGFILES FOR ERRORS #
-		if 'c' in argument_list:
-			self.load_processes_list()
-			self.search_for_errors_in_logfiles()
-		# USAGE LIKE TOP #
-		if 'd' in argument_list:
-			self.load_processes_list()
-			self.top()
-		# PANIC CLOSE #
-		if 'e' in argument_list:
-			self.load_processes_list()
-			self.list_currently_working_processes(config.ps_command, config.column_with_pid_for_ps_command)
-			self.panic_close()
-		# CREATE START SCRIPT #
-		if 'f' in argument_list:
-			self.load_processes_list()
-			self.create_start_or_stop_script(if_start=True)
-		# CREATE STOP SCRIPT #
-		if 'g' in argument_list:
-			self.load_processes_list()
-			self.create_start_or_stop_script(if_start=False)
-		# MONITOR ALL PROCESSES IN BACKGROUNDES #
-		if 'i' in argument_list:
-			self.load_processes_list()
-			self.monitor_processes_in_background()
-		# MAIN FUNCTIONALITY - CHECK PROCESSES #
-		if not argument_list or '0' in argument_list or '1' in argument_list:
-			self.load_processes_list()
-			self.list_currently_working_processes(config.ps_command, config.column_with_pid_for_ps_command)
-			self.check_processes()
 
 
 
@@ -644,11 +575,46 @@ class CheckProcesses(object):
 	### INIT ###
 	############
 
-	def __init__(self, argument_list, additional_argument, menu_config):
-		menu_addres = menu.Menu(self, argument_list, additional_argument, menu_config)
-
-
-
+	def __init__(self, arguments):
+		if arguments.use_color:
+			self.color()
+		if arguments.no_color:
+			self.no_color()
+		if arguments.custom_list:
+			self.check_processes_from_custom_list()
+			arguments.basic = False
+		if arguments.print_log_paths:
+			self.load_processes_list()
+			self.print_log_files_paths()
+			arguments.basic = False
+		if arguments.check_errors:
+			self.load_processes_list()
+			self.search_for_errors_in_logfiles()
+			arguments.basic = False
+		if arguments.top:
+			self.load_processes_list()
+			self.top()
+		if arguments.panic_close:
+			self.load_processes_list()
+			self.list_currently_working_processes(config.ps_command, config.column_with_pid_for_ps_command)
+			self.panic_close()
+			arguments.basic = False
+		if arguments.create_start_script:
+			self.load_processes_list()
+			self.create_start_or_stop_script(if_start=True)
+			arguments.basic = False
+		if arguments.create_stop_script:
+			self.load_processes_list()
+			self.create_start_or_stop_script(if_start=False)
+			arguments.basic = False
+		if arguments.background_monitor_with_mail:
+			self.load_processes_list()
+			self.monitor_processes_in_background()
+			arguments.basic = False
+		if arguments.basic:
+			self.load_processes_list()
+			self.list_currently_working_processes(config.ps_command, config.column_with_pid_for_ps_command)
+			self.check_processes()
 
 
 #####################
@@ -657,20 +623,20 @@ class CheckProcesses(object):
 
 def load_arguments():
 	try:
-		quantity_of_arguments = len(sys_argv)
-		first_list_of_arguments = ''
-		second_additional_argument = ''
-		if quantity_of_arguments > 2:
-			first_list_of_arguments = str(sys_argv[1])
-			second_additional_argument = ''
-			for arg in sys_argv[2:]:
-				second_additional_argument += ''.join([ arg, ' ' ])
-			second_additional_argument = second_additional_argument.strip( )	
-		elif quantity_of_arguments == 2: first_list_of_arguments = str(sys_argv[1])
-		
-		menu_config = MenuConfig()
-		self_main = CheckProcesses(first_list_of_arguments, second_additional_argument, menu_config)
-
+		parser = argparse.ArgumentParser(prog='PCS Tool', description='Application for checking and monitoring of indicated processes')
+		parser.add_argument('-5', '--basic', help=argparse.SUPPRESS, default=True, action='store_true')
+		parser.add_argument('-0', '--no_color', help='No color (BASH Color)', default=False, action='store_true')
+		parser.add_argument('-1', '--use_color', help='Use color (BASH Color, default option)', default=True, action='store_true')
+		parser.add_argument('-a', '--custom_list', help='Check processes from custom file list with processes', default=False, action='store_true')
+		parser.add_argument('-b', '--print_log_paths', help='Print paths to logfiles', default=False, action='store_true')
+		parser.add_argument('-c', '--check_errors', help='check basic logs for errors phrases of choosen processes', default=False, action='store_true')
+		parser.add_argument('-d', '--top', help='works like top, refresh each several seconds ([ctrl+c] to break)', default=False, action='store_true')
+		parser.add_argument('-e', '--panic_close', help='panic close - command for kill all processes', default=False, action='store_true')
+		parser.add_argument('-f', '--create_start_script', help='create start script', default=False, action='store_true')
+		parser.add_argument('-g', '--create_stop_script', help='create stop script', default=False, action='store_true')
+		parser.add_argument('-i', '--background_monitor_with_mail', help='work in background as monitor and mail if broken process found', default=False, action='store_true')
+		arguments = parser.parse_args()
+		self_main = CheckProcesses(arguments)
 	except KeyboardInterrupt:
 		sys_exit( menu_signs.sign_empty.join([ menu_signs.sign_newline_double, menu_text.error_keyboard_interrupt, menu_signs.sign_newline_double ]) )
 	except IndexError as error:

@@ -17,31 +17,6 @@ NC='\033[0m'
 
 
 
-######################
-### MENU ARGUMENTS ###
-######################
-
-application_name = 'PCS'
-application_type = 'TOOL'
-additional_application_description = 'Application for checking and monitoring of processes'
-argument_list = { 
-				'm': 'menu',
-				'h': 'help',
-				'q': 'quit (only for menu)',
-				'0': 'no color',
-				'1': 'use color',
-				'a': 'check processes from custom file list with processes',
-				'b': 'print paths to logfiles',
-				'c': 'check basic logs for errors phrases of choosen processes',
-				'd': 'works like top, refresh each several seconds',
-				'e': 'panic close - command for kill all processes',
-				'f': 'create start script',
-				'g': 'create stop script',
-				'i': 'work in background as monitor and mail if broken process found'
-			}
-
-
-
 ################
 ### STATUSES ###
 ################

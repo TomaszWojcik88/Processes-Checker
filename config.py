@@ -36,7 +36,7 @@ psutil_library = 'psultil library' # BETTER DO NOT CHANGE VALUE
 ps_commands = {
 				psutil_library: 0, # BETTER DO NOT CHANGE VALUE
 				'ps -ef': 1, # PROCESS COMMAND, COLUMN NUMBER OF PID
-				'ps -fu tomek': 1, # TOMEK HERE IS USER NAME
+				'ps -fu root': 1, # TOMEK HERE IS USER NAME
 				}
 folder_custom_processes_list = 'custom'
 
@@ -93,7 +93,7 @@ subject = 'WARNING! On Hostname %s Some of processes are not working'
 # VARIABLE NEED FOR SMTPLIB
 use_python_smtplib = True
 sender = 'tomasz.wojcik.88@gmail.com'
-sender_password = 'Haslo'
+sender_password = 'Password'
 smtp_server = 'smtp.gmail.com'
 smtp_port = 587
 # VARIABLE NEED FOR MAILX #
@@ -110,7 +110,7 @@ start_script_name = 'start_script.sh' # NAME OF CREATED START SCRIPT
 stop_script_name = 'stop_script.sh' # NAME OF CREATED STOP SCRIPT
 header_script_declaration = '#!/bin/bash' # EACH LINUX PROMPT SCRIPT NEED BASH / KSH DECLARATION IN HEADER FILE
 access_rights_to_scipt = 777 # HERE YOU CAN CHANGE PERMISSIONS TO CREATED FILE
-owner_of_the_script = 'tomek' # SET HERE USERNAME THAT SHOULD ME OWNER OF CREATED SCRIPT, OR LEFT EMPTY (THEN WILL NOT CHANGE OWNER)
+owner_of_the_script = 'root' # SET HERE USERNAME THAT SHOULD ME OWNER OF CREATED SCRIPT, OR LEFT EMPTY (THEN WILL NOT CHANGE OWNER)
 break_between_each_start_stop_command_in_seconds = 1 # BREAK BETWEEN EACH START / STOP COOMMAND PERFORMATION # SET 0 TO OMMIT BREAK COMMAND
 command_echo = 'echo' # DO NOT CHANGE VALUE
 command_sleep = 'sleep' # DO NOT CHANGE VALUE
